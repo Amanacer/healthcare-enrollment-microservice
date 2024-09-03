@@ -1,0 +1,31 @@
+version: '3'
+services:
+    discovery:
+        image: com.challenge.healthcare/enrollment-docker-discovery:0.0.1-SNAPSHOT
+        ports:
+            - 8761:8761
+    config:
+        image: com.challenge.healthcare/enrollment-docker-config:0.0.1-SNAPSHOT
+        environment:
+            - JAVA_OPTS=
+                -DEUREKA_SERVER=http://discovery:8761/eureka
+                -Dspring.cloud.config.server.native.searchLocations=C:\${user.home}\application-config
+        depends_on:
+            - discovery
+        ports:
+            - 8888:8888
+
+    enrollee-service:
+        image: com.challenge.healthcare/enrollment-docker-enrollee-service:0.0.1-SNAPSHOT
+        environment:
+            - JAVA_OPTS=
+              -DEUREKA_SERVER=http://discovery:8761/eureka
+              -Dspring.cloud.config.server.native.searchLocations=C:\${user.home}\application-config
+          depends_on:
+            - discovery
+            - config
+
+
+
+        
+
